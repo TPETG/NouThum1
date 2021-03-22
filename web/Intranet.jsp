@@ -12,7 +12,7 @@
         <title>INTRANET</title>
     </head>
     <body>
-        <h1>BIENVENIDO
+        <h1>BIENVENIDO </h1>
         
         <% if(session.getAttribute("Usuario")!= null){
              Usuario u = (Usuario) session.getAttribute("Usuario");
@@ -20,7 +20,7 @@
         
         <h2><%= u.getNombre()+""+u.getApellido() %></h2>
         <%}else{response.sendRedirect("Index.jsp?mjs=accseso denegado");%>
-    </h1>
+   
     <a href="Salir"><input type="button" value="Cerrar Session"/></a>
         
     </body>
