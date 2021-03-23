@@ -31,24 +31,89 @@ public class ControladorUsuario extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            
-            String Nombre= request.getParameter("Nombre");
-            String Apellido = request.getParameter("Apellido");
-            
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Controlador</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1> BIENVENIDO "+Nombre+" "+Apellido+"</h1>");
-            out.println("</body>");
-            out.println("</html>");
+       
+         String accion = request.getParameter("accion");
+        
+        switch(accion){
+        
+            case "1" -> IniciarSesion(request,response);
+            case "2" -> Registrar(request,response);
+            default -> response.sendRedirect("Index.jsp?mjs= WARNING-ALERT");
+        
         }
+        
+      
     }
+    
+    
+    
+    @SuppressWarnings("UseSpecificCatch")
+    private void IniciarSesion(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        try{
+      String Id = request.getParameter("Id");
+        String Password = request.getParameter("Password");
+        Usuario UsuarioNuevo = new Usuario(Id,Password);
+        UsuarioNuevo = validar(UsuarioNuevo);
+        if(UsuarioNuevo!=null){
+            HttpSession sesion = request.getSession();
+            sesion.setAttribute("Usuario", UsuarioNuevo);
+            response.sendRedirect("Intrant.jsp");
+        }else{
+            response.sendRedirect("Index.jsp?mjs=Datos  incorrectas");
+        }
+    
+        }catch(Exception e){
+            response.sendRedirect(e.getMessage()+"Index.jsp?mjs=");
+        }
+        }
+    
+    
+    
+    private void Registrar(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    
+        String Id= request.getParameter("Id").trim();
+        String Nombre = request.getParameter("Nombre").trim();
+        String Apellido = request.getParameter("Apellido").trim();
+        String Password = request.getParameter("Password").trim();
+        if(Id.equals("")|| Nombre.isEmpty()|| Apellido.length()==0 ||Password.isEmpty()){
+        response.sendRedirect("Registro.jsp?mjs= Campos Incompletos");
+    }else{
+            Usuario UsuarioNuevo = new Usuario(Id,Nombre,Apellido,Password);
+             if(validarRegistro(UsuarioNuevo)==null){
+                 Usuario.Usuarios.add(UsuarioNuevo);
+                 response.sendRedirect("Index.jsp?mjs= Usuario Registrado Inicio Sesion");
+     
+             }else{
+                 response.sendRedirect("Registro.jsp?mjs= Usuario ya existe");
+             
+             }
+    }
+    }
+    
+    
+
+    
+ private Usuario validar(Usuario UsuarioNuevo){
+            Usuario validado = null;
+            for(Usuario UsuarioRegistrado:Usuario.Usuarios){
+                if(UsuarioRegistrado.getId().equals(UsuarioNuevo.getId())&&
+                    UsuarioRegistrado.getPassword().equals(UsuarioNuevo.getPassword())){
+                    validado = UsuarioRegistrado;
+                }       
+            }
+                    return validado;
+ }
+private Usuario validarRegistro(Usuario UsuarioNuevo){
+
+            Usuario validado = null;
+        for(Usuario UsuarioRegistrado:Usuario.Usuarios){
+            if(UsuarioRegistrado.getId().equals(UsuarioNuevo.getId())){
+            validado = UsuarioRegistrado;
+        }
+        }
+            return validado;
+}
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
