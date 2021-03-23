@@ -25,14 +25,20 @@
                 <td>password</td>
                 passsword<input type="password" name="Id"/></td> 
             </tr>
-
-            <tr>
+ <tr>
                 <td> <input type="submit" name="Iniciar Session"/></td>
-                <td> <input type="reset" value="Limpiar"></td>  
+                <td> <a href="Registro.jsp">
+                <td> <input type="button" value="Registrar"></td>  
+                    </a>
             </tr>    
         </div>
+             
+             <input type="hidden" id="accion" value="1"/>
+             
              <% if(request.getParameter("mjs")!= null){ %>
              <h1> <%= request.getParameter("mjs") %></h1>
              <%} %>
+            
+             
     </body>
 </html>
